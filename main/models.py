@@ -3,3 +3,28 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 User = get_user_model()
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    profileimg = models.ImageField(upload_to='profile_images', default='blank-profile-picture.png')
+
+    def __str__(self):
+        return self.user.name
+
+
+class Product(models.Model):
+    product_name = models.TextField()
+    product_bio = models.TextField()
+    price = models.IntegerField()
+    image = models.ImageField(upload_to='images/', blank=True)
+
+    def __str__(self):
+        return self.product_name
+
+    def get_absolute_url(self):
+        return reverse('home')
+
+    class Meta:
+        verbose_name = "Продукт"
+        verbose_name_plural = "Продукты"
