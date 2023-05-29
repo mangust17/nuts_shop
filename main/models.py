@@ -13,11 +13,14 @@ class Profile(models.Model):
         return self.user.name
 
 
+from django.db import models
+
 class Product(models.Model):
     product_name = models.TextField()
     product_bio = models.TextField()
     price = models.IntegerField()
     image = models.ImageField(upload_to='images/', blank=True)
+    description = models.TextField(default='')
 
     def __str__(self):
         return self.product_name

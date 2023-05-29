@@ -5,73 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
-        /* Стили для логотипа и панели навигации */
-        .logo {
+        .navigation {
+            background-color: #f2f2f2;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navigation .logo {
             margin: 10px;
             font-size: 24px;
             font-weight: bold;
         }
 
-        .navigation {
-            background-color: #f2f2f2;
-            padding: 10px;
-        }
-
-        .navigation ul {
+        .navigation nav ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
+            display: flex;
+            align-items: center;
         }
 
-        .navigation ul li {
-            display: inline;
+        .navigation nav ul li {
             margin-right: 10px;
         }
 
-        .navigation ul li a {
+        .navigation nav ul li a {
             text-decoration: none;
         }
+.card {
+  border: 1px solid #4d4d4d;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  width: 300px;
+  margin-right: 20px;
+}
 
-        /* Стили для карточек товаров */
-        .product-card {
-            width: 200px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-            float: left;
-        }
+.card img {
+  width: 100%;
+  height: auto;
+}
 
-        .product-card img {
-            width: 100%;
-            height: auto;
-        }
+.card-body {
+  padding: 10px;
+}
 
-        .product-card h3 {
-            margin-top: 0;
-        }
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 
-        .product-card p {
-            color: #666;
-        }
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.product-detail {
+  display: flex;
+}
+
+.product-image {
+  flex: 0 0 300px;
+}
+
+.product-info {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.product-actions {
+  margin-top: 10px;
+}
+
+.add-to-cart {
+  margin-top: 10px;
+}
+
+
     </style>
 </head>
 <body>
-    <header>
+<header>
+    <div class="navigation">
         <div class="logo">
             <img src="logo.png" alt="Логотип">
         </div>
-        <nav class="navigation">
+        <nav>
             <ul>
                 <li><a href="#">Главная</a></li>
                 <li><a href="#">О нас</a></li>
-                <li><a href="#">Каталог</a></li>
+                <li><a href="#">Аккаунт</a></li>
                 <li><a href="#">Корзина</a></li>
             </ul>
         </nav>
-    </header>
+        <form method="POST" role="search" action="{% url 'search' %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" name="searched">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+</header>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
 </body>
 </html>

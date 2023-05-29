@@ -4,12 +4,12 @@ from .models import *
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView
 
 
 def main_page(request):
     products = Product.objects.order_by('-id')
     return render(request, 'main_page.html', {'title': 'Главная страница сайта', 'products': products})
-
 
 
 def create_us(request):
@@ -72,3 +72,13 @@ def search(request):
             return render(request, 'main/search.html', {'searched': searched_product, 'error': 'No results found'})
     else:
         return render(request, 'main/search.html')
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'products.html'
+    context_object_name = 'product'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Product, pk=pk)
