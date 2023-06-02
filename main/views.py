@@ -8,8 +8,8 @@ from django.views.generic import DetailView
 
 
 def main_page(request):
-    products = Product.objects.order_by('-id')
-    return render(request, 'main_page.html', {'title': 'Главная страница сайта', 'products': products})
+    product = Product.objects.all()
+    return render(request, 'main_page.html', {'title': 'Главная страница сайта', 'product': product})
 
 
 def create_us(request):
@@ -64,14 +64,13 @@ def log_out(request):
 def search(request):
     if request.method == 'POST':
         searched_product = request.POST.get('searched', '')
-        user = User.objects.filter(username=searched_product).first()
-        if user:
-            products = Product.objects.filter(user=user)
-            return render(request, 'main/search.html', {'searched': searched_product, 'products': products})
+        products = Product.objects.filter(product_name__icontains=searched_product)
+        if products:
+            return render(request, 'search.html', {'searched': searched_product, 'products': products})
         else:
-            return render(request, 'main/search.html', {'searched': searched_product, 'error': 'No results found'})
+            return render(request, 'search.html', {'searched': searched_product, 'error': 'No results found'})
     else:
-        return render(request, 'main/search.html')
+        return render(request, 'search.html')
 
 
 class ProductDetailView(DetailView):
@@ -82,3 +81,15 @@ class ProductDetailView(DetailView):
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
         return get_object_or_404(Product, pk=pk)
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('cart_view')
+
+

@@ -8,4 +8,6 @@ urlpatterns = [
     path('log_out', views.log_out, name='log_out'),
     path('search', views.search, name='search'),
     path('product/<int:pk>/', views.ProductDetailView.as_view(), name='product_detail'),
+    path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+
 ]

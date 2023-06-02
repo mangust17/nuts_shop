@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="color: 000000;">
+  <center>
+    {% if searched %}
+      <h2>Результаты поиска по "{{ searched }}"</h2>
+      {% if not products %}
+        <p>{{ error }}</p>
+      {% else %}
+        <div class="container">
+          <div class="row justify-content-center">
+            {% for product in products %}
+            <div class="card">
+              <a href="{% url 'product_detail' product.id %}">
+                <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
+              </a>
+              <div class="card-body">
+                <h3>{{ product.product_name }}</h3>
+                <p>{{ product.product_bio }}</p>
+                <p>Цена за кг: {{ product.price }}р</p>
+                <button>
+                  <a href="{% url 'add_to_cart' product.id %}">Добавить в корзину</a>
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% else %}
+      <h1>Пожалуйста введите запрос или вернитесь на главную страницу.</h1>
+    {% endif %}
+  </center>
+</div>
+{% endblock %}

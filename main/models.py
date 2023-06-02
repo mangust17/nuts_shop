@@ -10,12 +10,11 @@ class Profile(models.Model):
     profileimg = models.ImageField(upload_to='profile_images', default='blank-profile-picture.png')
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
-
-from django.db import models
 
 class Product(models.Model):
+    product_id = models.IntegerField()
     product_name = models.TextField()
     product_bio = models.TextField()
     price = models.IntegerField()
@@ -31,3 +30,12 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='cart_items')
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.user.username}'s CartItem: {self.product.product_name}"

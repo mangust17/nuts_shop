@@ -4,7 +4,7 @@
 <main>
     <div class="container">
         <div class="row justify-content-center">
-            {% for product in products %}
+            {% for product in product %}
             <div class="card">
                 <a href="{% url 'product_detail' product.id %}">
                     <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
@@ -13,12 +13,13 @@
                     <h3>{{ product.product_name }}</h3>
                     <p>{{ product.product_bio }}</p>
                     <p>Цена за кг: {{ product.price }}р</p>
-                    <button>Добавить в корзину</button>
+                    <button>
+                        <a href="{% url 'add_to_cart' product.id %}">Добавить в корзину</a>
+                    </button>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
 </main>
-
 {% endblock %}
