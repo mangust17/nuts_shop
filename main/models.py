@@ -10,11 +10,11 @@ class Profile(models.Model):
     profileimg = models.ImageField(upload_to='profile_images', default='blank-profile-picture.png')
 
     def __str__(self):
-        return self.user.username
+        return self.user.name
 
 
 class Product(models.Model):
-    product_id = models.IntegerField()
+    product_id = models.IntegerField(primary_key=True)
     product_name = models.TextField()
     product_bio = models.TextField()
     price = models.IntegerField()
@@ -38,4 +38,4 @@ class CartItem(models.Model):
     quantity = models.IntegerField(default=1)
 
     def __str__(self):
-        return f"{self.user.username}'s CartItem: {self.product.product_name}"
+        return f"{self.user.name}'s CartItem: {self.product}"

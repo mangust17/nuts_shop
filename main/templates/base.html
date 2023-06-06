@@ -45,6 +45,7 @@
   height: 100%;
   width: 300px;
   margin-right: 20px;
+  margin-top: 20px;
 }
 
 .card img {
@@ -91,21 +92,31 @@
   margin-top: 10px;
 }
 
+.logo-image {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+
 
     </style>
 </head>
 <body>
 <header>
-    <div class="navigation">
+    <div class="navigation" style="background-color: #C29B7C;">
         <div class="logo">
-            <img src="logo.png" alt="Логотип">
+            <img src="static/depositphotos_44681117-stock-illustration-cartoon-red-squirrel.jpg" alt="Логотип"
+                 class="logo-image">
+            <h1 style="display: inline-block; margin-left: 10px; vertical-align: middle;">Твой орех</h1>
         </div>
+
         <nav>
             <ul>
-                <li><a href="/">Главная</a></li>
-                <li><a href="#">О нас</a></li>
-                <li><a href="#">Аккаунт</a></li>
-                <li><a href="#">Корзина</a></li>
+                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li><a href="{% url 'about' %}">О нас</a></li>
+                <li><a href="{% url 'account' %}">Аккаунт</a></li>
+                <li><a href="{% url 'cart' %}">Корзина</a></li>
             </ul>
         </nav>
         <form method="POST" role="search" action="{% url 'search' %}">

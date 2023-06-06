@@ -12,6 +12,17 @@ def main_page(request):
     return render(request, 'main_page.html', {'title': 'Главная страница сайта', 'product': product})
 
 
+def about(request):
+    return render(request, 'about.html')
+
+
+def account(request):
+    if request.user.is_authenticated:
+        return render(request, 'account.html', {'authenticated': True})
+    else:
+        return render(request, 'account.html', {'authenticated': False})
+
+
 def create_us(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -37,7 +48,7 @@ def create_us(request):
             messages.info(request, "Пароли не совпадают")
             return redirect('create_us')
     else:
-        return render(request, 'main/create_us.html')
+        return render(request, 'reg.html')
 
 
 def sign_in(request):
@@ -53,7 +64,7 @@ def sign_in(request):
             messages.info(request, "Введенные данные не верны")
             return redirect('sign_in')
     else:
-        return render(request, 'main/signin.html')
+        return render(request, 'auth.html')
 
 
 def log_out(request):
@@ -82,6 +93,7 @@ class ProductDetailView(DetailView):
         pk = self.kwargs.get('pk')
         return get_object_or_404(Product, pk=pk)
 
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
@@ -90,6 +102,32 @@ def add_to_cart(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
 
-    return redirect('cart_view')
+    return render(request, 'home')
 
 
+def remove_from_cart(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, pk=cart_item_id, user=request.user)
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+    return redirect('cart')
+
+
+@login_required(login_url='signin')
+def cart(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    total_price = 0
+    for cart_item in cart_items:
+        total_price += cart_item.product.price * cart_item.quantity
+
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
+def checkout(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    if cart_items != 0:
+        return render(request, 'checkout.html')
+    else:
+        return render(request, 'main_page.html')

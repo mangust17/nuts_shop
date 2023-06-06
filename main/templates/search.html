@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div style="color: 000000;">
+<div style="color: #000000;">
   <center>
     {% if searched %}
       <h2>Результаты поиска по "{{ searched }}"</h2>
@@ -11,25 +12,39 @@
           <div class="row justify-content-center">
             {% for product in products %}
             <div class="card">
-              <a href="{% url 'product_detail' product.id %}">
-                <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
-              </a>
-              <div class="card-body">
-                <h3>{{ product.product_name }}</h3>
-                <p>{{ product.product_bio }}</p>
-                <p>Цена за кг: {{ product.price }}р</p>
-                <button>
-                  <a href="{% url 'add_to_cart' product.id %}">Добавить в корзину</a>
-                </button>
-              </div>
+                <a href="{% url 'product_detail' product.product_id %}">
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
+                </a>
+                <div class="card-body">
+                    <h3>{{ product.product_name }}</h3>
+                    <p>{{ product.product_bio }}</p>
+                    <p>Цена за 100гр: <span id="product-price-{{ product.product_id }}" data-price="{{ product.price }}">{{ product.price }}</span>р</p>
+                     <form method="POST" action="{% url 'add_to_cart' product.product_id %}">
+                        {% csrf_token %}
+                        <div style="display: flex; flex-direction: column;">
+                            <input type="number" name="quantity" id="quantity-{{ product.product_id }}" value="1" min="1" onchange="updatePrice('{{ product.product_id }}')">
+                            <button type="submit" style="margin-top: 10px;">Добавить в корзину</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             {% endfor %}
           </div>
         </div>
       {% endif %}
     {% else %}
-      <h1>Пожалуйста введите запрос или вернитесь на главную страницу.</h1>
+      <h1>Пожалуйста, введите запрос или вернитесь на главную страницу.</h1>
     {% endif %}
   </center>
 </div>
+<script>
+function updatePrice(productId) {
+    var quantity = document.getElementById('quantity-' + productId).value;
+    var pricePerKg = document.getElementById('product-price-' + productId).getAttribute('data-price');
+    var totalPrice = quantity * parseFloat(pricePerKg);
+    document.getElementById('product-price-' + productId).textContent = totalPrice.toFixed(2);
+    document.getElementById('product-price-' + productId).setAttribute('data-price', totalPrice.toFixed(2));
+}
+</script>
+
 {% endblock %}

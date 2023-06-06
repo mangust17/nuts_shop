@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div style="text-align: center;">
+    {% if authenticated %}
+      <h2>Добро пожаловать, {{ request.user.username }}!</h2>
+      <form method="post" action="{% url 'log_out' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Выйти</button>
+      </form>
+    {% else %}
+      <h2>Добро пожаловать на страницу аккаунта!</h2>
+      <a href="{% url 'sign_in' %}"><button class="btn btn-primary">Войти</button></a>
+      <a href="{% url 'create_us' %}"><button class="btn btn-secondary">Зарегистрироваться</button></a>
+    {% endif %}
+  </div>
+{% endblock %}
