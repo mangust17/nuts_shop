@@ -1,33 +1,44 @@
 {% extends 'base.html' %}
-
-{% block title %}
-{{ product.product_name }}
-{% endblock %}
-
-{% block content %}
-<div class="product-detail">
-  <div class="product-image">
-    <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
-  </div>
-  <div class="product-info">
-    <h3>{{ product.product_name }}</h3>
-    <p>{{ product.product_bio }}</p>
-    <p>Цена за 100гр: <span id="product-price">{{ product.price }}</span>р</p>
-    <div class="product-actions">
-      <input type="number" name="quantity" id="quantity" value="1" min="1" onchange="updatePrice()">
-      <button class="add-to-cart">Добавить в корзину</button>
+  {% block content %}
+  <div class="product-detail">
+    <div class="product-image">
+      <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
     </div>
-    <p>{{product.description}}</p>
+    <div class="product-info">
+      <h3>{{ product.product_name }}</h3>
+      <p>{{ product.product_bio }}</p>
+      <p>Цена за 100гр: <span id="product-price" data-price="{{ product.price }}">{{ product.price }}</span>р</p>
+      <div class="product-actions">
+        <input type="number" name="quantity" id="quantity" value="1" min="1" onchange="updatePrice('{{ product.id }}', {{ product.price }})">
+        <button class="add-to-cart">Добавить в корзину</button>
+      </div>
+      <p>{{ product.description }}</p>
+    </div>
   </div>
-</div>
-<script>
-  function updatePrice() {
-    var quantity = document.getElementById('quantity').value;
-    var pricePerKg = {{ product.price }};
-    var totalPrice = quantity * pricePerKg;
-    document.getElementById('product-price').textContent = totalPrice;
-  }
-</script>
-{% endblock %}
+  <script>
+  var previousQuantity = {};
 
+  function updatePrice(productId, previousPrice) {
+      var quantityInput = document.getElementById('quantity');
+      var quantity = quantityInput.value;
+      var pricePerKg = document.getElementById('product-price').getAttribute('data-price');
+
+      if (previousQuantity.hasOwnProperty(productId)) {
+          var previous = previousQuantity[productId];
+          if (quantity < previous) {
+              var totalPrice = parseFloat(pricePerKg) - (previousPrice * (previous - quantity));
+          } else {
+              var totalPrice = parseFloat(pricePerKg) + (previousPrice * (quantity - previous));
+          }
+      } else {
+          var totalPrice = parseFloat(pricePerKg) * quantity;
+      }
+
+      document.getElementById('product-price').textContent = totalPrice.toFixed(2);
+      document.getElementById('product-price').setAttribute('data-price', totalPrice.toFixed(2));
+
+      previousQuantity[productId] = quantity;
+  }
+  </script>
+  {% endblock %}
 

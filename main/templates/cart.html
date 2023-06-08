@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div style="color: 000000;">
+<div style="color: #000000;">
     <center>
         <h2>Корзина</h2>
         {% if cart_items %}
         <div class="container">
             <div class="row justify-content-center">
                 {% for cart_item in cart_items %}
-                <div class="card">
-                    <a href="{% url 'cart' %}">
-                        <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.product_name }}">
-                    </a>
+                <div class="card" style="display: flex; align-items: center;">
+                    <div style="flex: 0 0 150px;">
+                        <a href="{% url 'cart' %}">
+                            <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.product_name }}" style="width: 100%; height: auto;">
+                        </a>
+                    </div>
                     <div class="card-body">
                         <h3>{{ cart_item.product.product_name }}</h3>
                         <p>{{ cart_item.product.product_bio }}</p>
