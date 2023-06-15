@@ -1,56 +1,65 @@
-     {% extends 'base.html' %}
+{% extends 'base.html' %}
 
-    {% block content %}
-    <main>
-        <div class="container">
-            <div class="row justify-content-center">
-                {% for p in product %}
-                <div class="card">
-                    <a href="{% url 'product_detail' p.pk %}">
-                        <img src="{{ p.image.url }}" alt="{{ p.product_name }}" id="product-image-{{ p.product_id }}">
-                    </a>
-                    <div class="card-body">
-                        <h3>{{ p.product_name }}</h3>
-                        <p>{{ p.product_bio }}</p>
-                        <p>Цена за 100гр: <span id="product-price-{{ p.product_id }}" data-price="{{ p.price }}">{{ p.price }}</span>р</p>
-                         <form method="POST" action="{% url 'add_to_cart' p.product_id %}">
-                            {% csrf_token %}
-                            <div style="display: flex; flex-direction: column;">
-                                <input type="number" name="quantity" id="quantity-{{ p.product_id }}" value="1" min="1" onchange="updatePrice('{{ p.product_id }}', {{ p.price }})">
-                                <button type="submit" style="margin-top: 10px;">Добавить в корзину</button>
-                            </div>
-                        </form>
-                    </div>
+{% block content %}
+<main>
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for p in product %}
+            <div class="card">
+                <a href="{% url 'product_detail' p.pk %}">
+                    <img src="{{ p.image.url }}" alt="{{ p.product_name }}" id="product-image-{{ p.product_id }}">
+                </a>
+                <div class="card-body">
+                    <h3>{{ p.product_name }}</h3>
+                    <p>{{ p.product_bio }}</p>
+                    <p>Цена за 100гр: <span id="product-price-{{ p.product_id }}" data-price="{{ p.price }}">{{ p.price }}</span>р
+                    </p>
+                    <form method="POST" action="{% url 'add_to_cart' p.product_id %}">
+                        {% csrf_token %}
+                        <div style="display: flex; flex-direction: column;">
+                            <input type="number" name="quantity" id="quantity-{{ p.product_id }}" value="1" min="1"
+                                   onchange="updatePrice('{{ p.product_id }}', {{ p.price }})">
+                            <button type="submit" style="margin-top: 10px;">Добавить в корзину</button>
+                        </div>
+                    </form>
+
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         </div>
-    </main>
+    </div>
+</main>
 
-    <script>
+<script>
     var previousQuantity = {};
 
-    function updatePrice(productId, previousPrice) {
-        var quantityInput = document.getElementById('quantity-' + productId);
-        var quantity = quantityInput.value;
-        var pricePerKg = document.getElementById('product-price-' + productId).getAttribute('data-price');
+function updatePrice(productId, previousPrice) {
+    var quantityInput = document.getElementById('quantity-' + productId);
+    var quantity = quantityInput.value;
+    var pricePerKg = document.getElementById('product-price-' + productId).getAttribute('data-price');
 
-        if (previousQuantity.hasOwnProperty(productId)) {
-            var previous = previousQuantity[productId];
-            if (quantity < previous) {
-                var totalPrice = parseFloat(pricePerKg) - (previousPrice * (previous - quantity));
-            } else {
-                var totalPrice = parseFloat(pricePerKg) + (previousPrice * (quantity - previous));
-            }
+    if (previousQuantity.hasOwnProperty(productId)) {
+        var previous = previousQuantity[productId];
+        if (quantity < previous) {
+            var totalPrice = parseFloat(pricePerKg) - (previousPrice * (previous - quantity));
         } else {
-            var totalPrice = parseFloat(pricePerKg) * quantity;
+            var totalPrice = parseFloat(pricePerKg) + (previousPrice * (quantity - previous));
         }
-
-        document.getElementById('product-price-' + productId).textContent = totalPrice.toFixed(2);
-        document.getElementById('product-price-' + productId).setAttribute('data-price', totalPrice.toFixed(2));
-
-        previousQuantity[productId] = quantity;
+    } else {
+        var totalPrice = parseFloat(pricePerKg) * quantity;
     }
-    </script>
 
-    {% endblock %}
+    document.getElementById('product-price-' + productId).textContent = totalPrice.toFixed(2);
+    document.getElementById('product-price-' + productId).setAttribute('data-price', totalPrice.toFixed(2));
+
+    previousQuantity[productId] = quantity;
+
+    // Обновление значения quantity в форме
+    document.getElementById('quantity-' + productId).value = quantity;
+}
+
+
+
+</script>
+
+{% endblock %}

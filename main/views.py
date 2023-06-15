@@ -96,10 +96,10 @@ class ProductDetailView(DetailView):
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    quantity = int(request.POST.get('quantity', 1))
     cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
-
     if not created:
-        cart_item.quantity += 1
+        cart_item.quantity += quantity
         cart_item.save()
 
     return redirect('/')
